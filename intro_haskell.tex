@@ -21,7 +21,6 @@
   language=Haskell,
   keywordstyle=\color{blue},
   basicstyle=\small\sffamily,
-  %frame=tb,
   columns=fullflexible,
   showstringspaces=false,
   mathescape=true,
@@ -39,31 +38,16 @@
 \begin{frame}
   \frametitle{Table of Contents}
   \begin{columns}[]
-  \begin{column}[]{5cm}
-   \tableofcontents[]
-  \end{column}
-  \begin{column}[]{5cm}
+   \begin{column}[]{5cm}
+    \tableofcontents[]
+   \end{column}
+   \begin{column}[]{5cm}
     \includegraphics[width=1\linewidth]{figs/xkcd}
-  \end{column}
- \end{columns}
- 
-  
+   \end{column}
+  \end{columns}
 \end{frame}
 
 \section{Motivation}
-\begin{frame}
-\frametitle{Motivation}
-
- \begin{itemize}
-  \item 10 time less lines then in C,
-  \item Great expressivity
-  \item Great genericity,
-  \item More readable, more maintainable,
-  \item Very few bugs: if it compiles, 90\% chances it works on the first try
- \end{itemize}
- 
-\end{frame}
-
 
 \begin{frame}[fragile]
 \frametitle{What does this code do?}
@@ -114,11 +98,23 @@ void f(int a[], int lo, int hi)
 
 \end{frame}
 
+\begin{frame}
+\frametitle{Motivation}
+
+ \begin{itemize}
+  \item 10 time less lines than in C,
+  \item Great expressivity,
+  \item Great genericity,
+  \item More readable, more maintainable,
+  \item Very few bugs: if it compiles, 90\% chances it works on the first try
+ \end{itemize}
+ 
+\end{frame}
+
 
 \section{Features}
 \begin{frame}
 \frametitle{Features}
-Features of Haskell
 
  \begin{itemize}
   \item Functional
@@ -136,24 +132,47 @@ Features of Haskell
  \begin{itemize}
   \item Functions are first order values
   \item Anonymous functions
-  \item Lambda functions
   \item Partial application
  \end{itemize}
 
-\begin{block}{Examples}
-
- \begin{lstlisting} 
-  map (+1) [1..10]
- 
-  filter (>3) [1, 4, 5, 2]
-
-  zip [1, 2, 3] ['a', 'b', 'c']
+ \vspace{0.5cm}
+ \begin{block}{Examples}
+  \begin{lstlisting} 
+   myFunc a = a + 1
   
- \end{lstlisting}
-\end{block}
+   map (+1) [1..10]
+  
+   filter (>3) [1, 4, 5, 2]
+  
+   zip [1, 2, 3] ['a', 'b', 'c']
+  
+  \end{lstlisting}
+ \end{block}
 
 \end{frame}
 
+\begin{frame}[fragile]
+\frametitle{Functional}
+ 
+ \begin{itemize}
+  \item Lambda functions
+  \item Pattern matching	  
+ \end{itemize}
+
+ \vspace{0.5cm}
+ \begin{block}{Examples}
+
+  \begin{lstlisting} 
+   map (\a -> a + 1) [1..10]
+  
+   fib 0 = 0
+   fib 1 = 1
+   fib n = fib (n - 2) + fib (n - 1)
+  
+  \end{lstlisting}
+ \end{block}
+
+\end{frame}
 
 \subsection{Pure}
 \begin{frame}[fragile]
@@ -167,16 +186,23 @@ Features of Haskell
    \end{itemize}
   \end{column}
   \begin{column}[]{5cm}
-    \includegraphics[width=1\linewidth]{figs/pure}
+    \includegraphics[width=0.8\linewidth]{figs/pure}
   \end{column}
  \end{columns}
+ \vspace{0.3cm}
  The output of a function will always be the same for a given input.
  
- \begin{block}{Example}
-  Can we refactor this C code?
-  \begin{lstlisting}
-    a = f() + g() into  a = g() + f()
+ \begin{block}{Counter examples in C}
+  \begin{lstlisting}[language=C]
+    a = f() + g() 
   \end{lstlisting}
+  Can we refactor this into a = g() + f()?
+
+  \begin{lstlisting}[language=C]
+    a = b 
+  \end{lstlisting}
+  Can I replace a by b in all my code?
+
  \end{block}
  
 \end{frame}
@@ -190,15 +216,14 @@ Features of Haskell
     \item No variables!
     \item No for loops!
     \item No assignment operator!
-    \item order of instructions doesn't matter
+    \item Order of instructions doesn't matter
    \end{itemize}
   \end{column}
   \begin{column}[]{5cm}
-    \includegraphics[width=0.5\linewidth]{figs/neo}
+    \includegraphics[width=0.7\linewidth]{figs/neo}
   \end{column}
  \end{columns}
-
- The output of a function will always be the same for a given input.
+ \vspace{0.5cm}
  
 \end{frame}
 
@@ -236,14 +261,12 @@ What do I win with purity?
   \end{column}
  \end{columns}
 
+ \vspace{0.5cm}
  \begin{block}{Example}
-  \begin{lstlisting}
-    fib 0 = 0
-    fib 1 = 1
-    fib n = fib (n - 2) + fib (n - 1)
+  \begin{lstlisting}[basicstyle=\small]
+    take 5 [1..]
 
     fibs = 0 : 1 : (zipWith (+) fibs (tail fibs))
-    fib n = fibs !! n
   \end{lstlisting}
  \end{block}
  
@@ -254,14 +277,22 @@ What do I win with purity?
 \frametitle{Static Typing}
 
  \begin{itemize}
-  \item Static typing: declare your intentions to the compiler
+  \item Static typing
+   \begin{itemize}
+    \item Declare your intentions to the compiler
+    \item Filter bugs at compile time
+   \end{itemize}
   \item Genericity
+  \item Type inference
  \end{itemize}
  
- \begin{block}{Example}
-  What is this function doing?
+ \vspace{0.5cm}
+ \begin{block}{Quizz}
+  What are these functions doing?
   \begin{lstlisting}
-    map :: (a -> b) -> [a] -> [b]
+   inc :: Int -> Int 
+   id :: a -> a 
+   map :: (a -> b) -> [a] -> [b]
   \end{lstlisting}
  \end{block}
 
@@ -270,11 +301,17 @@ What do I win with purity?
 \begin{frame}[fragile]
 \frametitle{Exercices}
 
- Using GHCi, What is the type of:
+ Using GHCi, what is the type of:
  \begin{lstlisting}
+  1
   (+1)
+  map 
   map (+1)
   [1..]
+  filter
+  foldr
+  (.)
+  flip
  \end{lstlisting}
  
 \end{frame}
@@ -283,9 +320,61 @@ What do I win with purity?
 \begin{frame}
 \frametitle{IO}
 
-  \includegraphics[width=1\linewidth]{figs/noIO}
+ How do we ever perform IO if every function is pure?
+  \vspace{1cm}
+  \begin{columns}[]
+   \begin{column}[]{5cm}
+    \includegraphics[width=1\linewidth]{figs/pure}
+   \end{column}
+   \begin{column}[]{5cm}
+    \includegraphics[width=1.1\linewidth]{figs/readWrite}
+   \end{column}
+  \end{columns}
 
 \end{frame}
+
+\begin{frame}
+\frametitle{IO}
+ Passing the world around 
+ \includegraphics[width=1\linewidth]{figs/world}
+\end{frame}
+
+\begin{frame}
+\frametitle{IO}
+ IO operations can now be chained!
+ \includegraphics[width=1\linewidth]{figs/worldChain}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{IO}
+ The run-time is reading lazily the IO instructions from the output of the chain, and perform them.
+ \includegraphics[width=0.8\linewidth]{figs/runTime}
+ \begin{block}{Example}
+  \begin{lstlisting}[basicstyle=\small]
+   main = do
+     putStrLn Foo
+     putStrLn Bar
+  \end{lstlisting}
+ \end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{IO}
+ readString and writeString can also interact because of lazyness.
+ \vspace{0.5cm}
+ \includegraphics[width=1\linewidth]{figs/pureReadWrite}
+ \vspace{0.5cm}
+ \begin{block}{Example}
+  \begin{lstlisting}[basicstyle=\small]
+   main = do
+     a <- readStrLn
+     putStrLn a
+  \end{lstlisting}
+ \end{block}
+\end{frame}
+
 
 %\begin{frame}[fragile]
 %\frametitle{IO}
