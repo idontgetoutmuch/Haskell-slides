@@ -234,10 +234,39 @@ void f(int a[], int lo, int hi)
  
 \end{frame}
 
+\begin{frame}[fragile]
+\frametitle{Pure}
+Do you really need for loops?
+
+ \begin{block}{Java}
+  \begin{lstlisting}[language=Java]
+    for(int i = 0; i < 10; i++) {
+       list[i] = list[i] + 1 
+    }
+
+    int total = 0;
+    for(int i = 0; i < 10; i++) {
+       total = total + list[i] 
+    }
+
+  \end{lstlisting}
+ \end{block}
+ 
+ \begin{block}{Haskell}
+  \begin{lstlisting}[language=Haskell]
+    map (+1) list
+    foldr 0 (+) list
+    sum list
+  \end{lstlisting}
+ \end{block}
+
+\end{frame}
+
 \begin{frame}
 \frametitle{Pure}
 
 What do I win with purity?
+ \vspace{0.5cm}
  \begin{itemize}
   \item Much less bugs
   \item Easier to reason with
@@ -246,9 +275,9 @@ What do I win with purity?
   \item Enables equational reasoning
   \item Enables laziness
  \end{itemize}
-
  
 \end{frame}
+
 
 \subsection{Lazy}
 \begin{frame}[fragile]
