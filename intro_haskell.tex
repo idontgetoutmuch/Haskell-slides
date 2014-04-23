@@ -12,13 +12,15 @@
 \usepackage{listings}
 %\setbeamertemplate{bibliography item}{[\theenumiv]}
 \usepackage[outputdir=figs]{diagrams-latex}
+\setbeamertemplate{note page}[plain]
+\setbeameroption{show notes}
 
 \usetheme[]{Berkeley} %backgroundimagefile=figs/logo.png, useblacktitletext
 
 \titlegraphic{
 	\includegraphics[width=2cm]{figs/logo}
    \hspace*{4.75cm}
-   \includegraphics[width=2cm]{figs/logo_hackerspace}
+   \includegraphics[width=2cm]{figs/logo_wlhn}
 }
 \begin{document}
 
@@ -32,11 +34,11 @@
   captionpos=b
 }
 
-\title{Presentation of Haskell}
-\subtitle{Hackerspace Trento}
-\author{Corentin Dupont}
+\title{Introduction to Haskell}
+\subtitle{West London Hack Night}
+\author{Dominic Steinitz}
 
-\date{March 19, 2014}
+\date{23 April 2014}
 
 \maketitle
 
@@ -51,6 +53,26 @@
    \end{column}
   \end{columns}
 \end{frame}
+
+\section{Haskell in a Nutshell}
+
+\begin{frame}{Hindley Milner Principal Type Inference Algorithm}
+
+$$
+\bar{\Gamma}(\tau) = \forall\ \hat{\alpha}\ .\ \tau \quad\quad \hat{\alpha} = \textrm{free}(\tau) - \textrm{free}(\Gamma)
+$$
+
+$$
+\begin{array}{cl}
+\displaystyle\frac{x:\sigma \in \Gamma \quad \sigma \sqsubseteq \tau}{\Gamma \vdash x:\tau}&[\mathtt{Var}]\\ \\
+\displaystyle\frac{\Gamma \vdash e_0:\tau \rightarrow \tau' \quad\quad \Gamma \vdash e_1 : \tau }{\Gamma \vdash e_0\ e_1 : \tau'}&[\mathtt{App}]\\ \\
+\displaystyle\frac{\Gamma,\;x:\tau\vdash e:\tau'}{\Gamma \vdash \lambda\ x\ .\ e : \tau \rightarrow \tau'}&[\mathtt{Abs}]\\ \\
+\displaystyle\frac{\Gamma \vdash e_0:\tau \quad\quad \Gamma,\,x:\bar{\Gamma}(\tau) \vdash e_1:\tau'}{\Gamma \vdash \mathtt{let}\ x = e_0\ \mathtt{in}\ e_1 :  \tau'}&[\mathtt{Let}]
+\end{array}
+$$
+
+\end{frame}
+
 
 \section{Motivation}
 
@@ -113,7 +135,7 @@ void f(int a[], int lo, int hi)
   \item More readable, more maintainable,
   \item Very few bugs: if it compiles, 90\% chances it works on the first try
  \end{itemize}
- 
+
 \end{frame}
 
 
@@ -130,7 +152,115 @@ void f(int a[], int lo, int hi)
 
 \end{frame}
 
+\subsection{Static Typing}
+
+\begin{frame}[fragile]
+  \frametitle{Static Typing}
+  \begin{itemize}
+  \item Type inference
+  \item Static typing
+    \begin{itemize}
+    \item Declare your intentions to the compiler
+    \item Filter bugs at compile time
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Defining functions}
+  Everything has a type so a function must have a type.
+  $$
+  \begin{aligned}
+    f\, x             &= x + 1 \\
+    \textrm{fact}\, 0 &= 1 \\
+    \textrm{fact}\, n &= n \times \textrm{fact} (n - 1) \\
+  \end{aligned}
+  $$
+  What are their types?
+\end{frame}
+
+\note[itemize]{
+\item {type let \texttt{f x = x + 1} on the command line and then \texttt{t: f}}
+\item {type let \texttt{\textbackslash g = x -> x + 1} on the command line and then \texttt{t: g}}
+}
+
+\begin{frame}[fragile]
+  \frametitle{Defining functions}
+  Everything has a type so a function must have a type.
+  $$
+  f\, x = x + 1
+  $$
+  $$
+  f = \lambda x \longrightarrow x + 1
+  $$
+  What are their types?
+\end{frame}
+
+\note[itemize]{
+\item {type let \texttt{f x = x + 1} on the command line and then \texttt{t: f}}
+\item {type let \texttt{\textbackslash g = x -> x + 1} on the command line and then \texttt{t: g}}
+}
+
+\begin{frame}[fragile]
+  \frametitle{Partial Application}
+  \uncover<1->{
+    What is the type of $+$?
+  }
+  \uncover<2->{
+  $$
+  \begin{aligned}
+    (+) &:: \textrm{Num} \, a \implies a \longrightarrow a \longrightarrow a \\
+    (+) &:: \textrm{Num} \, a \implies a \longrightarrow (a \longrightarrow a) \\
+  \end{aligned}
+  $$
+  }
+\end{frame}
+
+\note[itemize]{
+\item {type  \texttt{t: +}}
+\item {\texttt{+} is an infix operator but we can make it prefix: type \texttt{(+) 1 2}}
+\item {type \texttt{:t (+)}}
+\item {type \texttt{:t (+) 1} and \texttt{:t (+1)}}
+\item {type \texttt{:t (+) 1 2} and \texttt{(+1) 2}}
+}
+
+\begin{frame}[fragile]
+  \frametitle{Lists}
+  \uncover<1->{
+    Lists hold a somewhat special status (as do tuples).
+  }
+  \uncover<2->{
+  $$
+  \begin{aligned}
+    \big[\big] &:: [a] \\
+    (:)        &::  a \longrightarrow [a] \longrightarrow [a] \\
+    (++)       &::  [a] \longrightarrow [a] \longrightarrow [a] \\
+  \end{aligned}
+  $$
+  }
+\end{frame}
+
+\note[itemize]{
+\item {type  \texttt{0:[], 1:0:[], 0:[1,2,3]}}
+\item {type \texttt{[1,2,3] ++ [4,5,6]}}
+}
+
 \subsection{Functional}
+\begin{frame}[fragile]
+\frametitle{Functions are First Class}
+
+\uncover<1->{
+Suppose we want to apply a function to a list. What is the type?
+}
+
+\uncover<2->{
+$$
+\textrm{map} :: (a \longrightarrow b) \longrightarrow [a] \longrightarrow [b]
+$$
+}
+
+\end{frame}
+
 \begin{frame}[fragile]
 \frametitle{Functional}
 
@@ -157,6 +287,51 @@ void f(int a[], int lo, int hi)
  \end{block}
 
 \end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Static Typing}
+
+ \begin{itemize}
+  \item Type inference
+  \item Static typing
+   \begin{itemize}
+    \item Declare your intentions to the compiler
+    \item Filter bugs at compile time
+   \end{itemize}
+ \end{itemize}
+ 
+ \vspace{0.5cm}
+ \begin{block}{Quiz}
+  What is the type of these functions?
+  \begin{lstlisting}
+    (+)
+    (+1)
+    (++)
+    map
+    foldr
+  \end{lstlisting}
+ \end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Exercices}
+
+ Using GHCi, what is the type of:
+ \begin{lstlisting}
+  1
+  (+1)
+  map 
+  map (+1)
+  [1..]
+  filter
+  foldr
+  (.)
+  flip
+ \end{lstlisting}
+ 
+\end{frame}
+
 
 \begin{frame}[fragile]
 \frametitle{Functional}
@@ -305,50 +480,6 @@ What do I win with purity?
     fibs = 0 : 1 : (zipWith (+) fibs (tail fibs))
   \end{lstlisting}
  \end{block}
- 
-\end{frame}
-
-\subsection{Static Typing}
-\begin{frame}[fragile]
-\frametitle{Static Typing}
-
- \begin{itemize}
-  \item Static typing
-   \begin{itemize}
-    \item Declare your intentions to the compiler
-    \item Filter bugs at compile time
-   \end{itemize}
-  \item Genericity
-  \item Type inference
- \end{itemize}
- 
- \vspace{0.5cm}
- \begin{block}{Quizz}
-  What are these functions doing?
-  \begin{lstlisting}
-   inc :: Int -> Int 
-   id :: a -> a 
-   map :: (a -> b) -> [a] -> [b]
-  \end{lstlisting}
- \end{block}
-
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{Exercices}
-
- Using GHCi, what is the type of:
- \begin{lstlisting}
-  1
-  (+1)
-  map 
-  map (+1)
-  [1..]
-  filter
-  foldr
-  (.)
-  flip
- \end{lstlisting}
  
 \end{frame}
 
