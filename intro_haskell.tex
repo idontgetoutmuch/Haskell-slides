@@ -144,9 +144,9 @@ void f(int a[], int lo, int hi)
 \frametitle{Features}
 
  \begin{itemize}
+  \item Statically typed
   \item Functional
   \item Pure
-  \item Statically typed
   \item Lazy
  \end{itemize}
 
@@ -169,37 +169,24 @@ void f(int a[], int lo, int hi)
 \begin{frame}[fragile]
   \frametitle{Defining functions}
   Everything has a type so a function must have a type.
+  \uncover<1->{
+    $$
+    \begin{aligned}
+      f\, x             &= x + 1 \\
+    \end{aligned}
+    $$
+  }
+  What is the type?
+  \uncover<2->{
   $$
   \begin{aligned}
-    f\, x             &= x + 1 \\
     \textrm{fact}\, 0 &= 1 \\
     \textrm{fact}\, n &= n \times \textrm{fact} (n - 1) \\
   \end{aligned}
   $$
-  What are their types?
+  What is the type?
+  }
 \end{frame}
-
-\note[itemize]{
-\item {type let \texttt{f x = x + 1} on the command line and then \texttt{t: f}}
-\item {type let \texttt{\textbackslash g = x -> x + 1} on the command line and then \texttt{t: g}}
-}
-
-\begin{frame}[fragile]
-  \frametitle{Defining functions}
-  Everything has a type so a function must have a type.
-  $$
-  f\, x = x + 1
-  $$
-  $$
-  f = \lambda x \longrightarrow x + 1
-  $$
-  What are their types?
-\end{frame}
-
-\note[itemize]{
-\item {type let \texttt{f x = x + 1} on the command line and then \texttt{t: f}}
-\item {type let \texttt{\textbackslash g = x -> x + 1} on the command line and then \texttt{t: g}}
-}
 
 \begin{frame}[fragile]
   \frametitle{Partial Application}
@@ -214,15 +201,16 @@ void f(int a[], int lo, int hi)
   \end{aligned}
   $$
   }
+  \uncover<3->{
+  $$
+    \begin{aligned}
+      (+) &:: \textrm{Num} \, a \implies a \longrightarrow (a \longrightarrow a) \\
+      (+)\, 1 &:: \textrm{Num} \, a \implies a \longrightarrow a \\
+      (+ 1) &:: \textrm{Num} \, a \implies a \longrightarrow a \\
+  \end{aligned}
+  $$
+  }
 \end{frame}
-
-\note[itemize]{
-\item {type  \texttt{t: +}}
-\item {\texttt{+} is an infix operator but we can make it prefix: type \texttt{(+) 1 2}}
-\item {type \texttt{:t (+)}}
-\item {type \texttt{:t (+) 1} and \texttt{:t (+1)}}
-\item {type \texttt{:t (+) 1 2} and \texttt{(+1) 2}}
-}
 
 \begin{frame}[fragile]
   \frametitle{Lists}
@@ -240,11 +228,6 @@ void f(int a[], int lo, int hi)
   }
 \end{frame}
 
-\note[itemize]{
-\item {type  \texttt{0:[], 1:0:[], 0:[1,2,3]}}
-\item {type \texttt{[1,2,3] ++ [4,5,6]}}
-}
-
 \subsection{Functional}
 \begin{frame}[fragile]
 \frametitle{Functions are First Class}
@@ -256,6 +239,12 @@ Suppose we want to apply a function to a list. What is the type?
 \uncover<2->{
 $$
 \textrm{map} :: (a \longrightarrow b) \longrightarrow [a] \longrightarrow [b]
+$$
+}
+
+\uncover<3->{
+$$
+\textrm{map}\, (+1) :: \textrm{Num} a \implies [a] \longrightarrow [a]
 $$
 }
 
